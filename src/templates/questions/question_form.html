@@ -1,0 +1,73 @@
+<div class="col-sm-6 col-sm-offset-3">
+	<form method="POST" action="">
+		{% csrf_token %}
+		<h2>{{ object.text }}</h2>
+		<input name="question_id" type="hidden" value="{{ object.id }}">
+		<div class="form-group {% if form.errors.answer_id %}has-error{% endif %}">
+			<h4>Your Answer*</h4>
+			{% if form.errors.answer_id %}
+				<div class="alert alert-danger" role="alert">
+		  			<span class="sr-only">Error:</span>
+		  			{{ form.errors.answer_id }}
+				</div>
+			{% endif %}
+			{% for ans in object.answer_set.all %}
+				<div class="radio">
+					<label>
+						<input type="radio" name="answer_id" id="input" value="{{ ans.id }}" 
+						{% if ans.id == answers.my_answer.id %} checked {% endif %}>
+						{{ ans.text }}
+					</label>
+				</div>
+			{% endfor %}
+		</div>
+		<div class="form-group {% if form.errors.importance_level %}has-error{% endif %}">
+			{% if form.errors.importance_level %}
+				<div class="alert alert-danger" role="alert">
+		  			<span class="sr-only">Error:</span>
+		  			{{ form.errors.importance_level }}
+				</div>
+			{% endif %}
+			{{ answers.my_answer_importance }}
+			<select name="importance_level" id="input" class="form-control">
+			{% for level in levels %}
+				<option value="{{ level.0 }}" {% if answers.my_answer_importance == level.0 %}selected{% endif %}>{{ level.0 }}</option>
+			{% endfor %}
+			</select>
+		</div>
+		<div class="form-group {% if form.errors.their_answer_id %}has-error{% endif %}">
+			<h4>Coworkers Answer</h4>
+			{% if form.errors.their_answer_id %}
+				<div class="alert alert-danger" role="alert">
+		  			<span class="sr-only">Error:</span>
+		  			{{ form.errors.their_answer_id }}
+				</div>
+			{% endif %}
+			<div class="radio">
+				{% for ans in object.answer_set.all %}
+				<label>
+						<input type="radio" name="their_answer_id" id="input" value="{{ ans.id }}" {% if ans.id == answers.their_answer.id %} checked {% endif %}>
+						{{ ans.text }}
+				</label><br/>
+				{% endfor %}
+				<label>
+					<input type="radio" name="their_answer_id" id="input" value="-1" {% if not answers.their_answer.id %} checked {% endif %}>Is not Important
+				</label>
+			</div>
+		</div>
+		<div class="form-group {% if form.errors.their_importance_level %}has-error{% endif %}">
+			{% if form.errors.their_importance_level %}
+				<div class="alert alert-danger" role="alert">
+		  			<span class="sr-only">Error:</span>
+		  			{{ form.errors.their_importance_level }}
+				</div>
+			{% endif %}
+			<select name="their_importance_level" id="input" class="form-control">
+			{% for level in levels %}
+				<option value="{{ level.0 }}" {% if answers.their_importance == level.0 %}selected{% endif %}>{{ level.0 }}</option>
+			{% endfor %}
+			</select>
+		</div>
+		<input class="btn btn-primary" type="submit" value="Send" />
+	</form>
+</div>

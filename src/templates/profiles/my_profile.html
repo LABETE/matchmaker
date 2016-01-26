@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+{% if request.user == object.user %}
+<div class="row">
+	<div class="col-sm-6 col-sm-offset-3">
+		<div class="row">
+			<div class="col-sm-4">
+				<h2>{{ object.user }}</h2>
+				{% if object.location %}
+					<p class="lead">Location: {{ object.location }}</p>
+				{% endif %}
+				{% if object.picture %}
+					<img src="{{ object.picture.url }}" class="img-responsive" alt="Image">
+				{% else %}
+					<img src="{% static 'img/Profile.png' %}" class="img-responsive" alt="Image">
+				{% endif %}
+				<a href="{% url 'profiles:edit_profile' slug=object.user.username|slugify %}" class="btn btn-success">Edit information</a>
+			</div>
+			<div class="col-sm-8 text-center">
+				<h2>Jobs</h2>
+				{% if jobs %}
+					{% for job in jobs %}
+						<table class="table">
+							<tr>
+								<td>
+									<a href="{% url 'jobs:job_detail' slug=job.position|slugify %}">{{ job.position }}</a> in <a href="{% url 'jobs:location_detail' slug=job.location|slugify %}">{{ job.location }}</a> at <a href="{% url 'jobs:employer_detail' slug=job.employer|slugify %}">{{ job.employer }}</a>
+								</td>
+							</tr>
+						</table>
+					{% endfor %}
+				{% endif %}
+				<a href="{% url 'profiles:create' %}" class="btn btn-primary">Add job</a>
+				<a href="{% url 'profiles:update' %}" class="btn btn-warning">Edit your jobs</a>
+			</div>
+		</div>
+	</div>
+</div>
+{% else %}
+	<div class="col-sm-6 col-sm-offset-3">
+		<h2>{{ user_not_allowed }}</h2>
+	</div>
+{% endif %}
+{% endblock content %}

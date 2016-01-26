@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+	<div class="row">
+		<div class="col-sm-8 col-sm-offset-2">
+			<div class="row">
+				<h2>People who has as employer {{ object }}</h2>
+				<hr/>
+				{% if users %}
+					{% for user in users %}
+					<a href="{{ user.user.profile.get_absolute_url }}">
+						<div class="col-sm-2">
+							{{ user.user.username }}
+							{% if user.user.profile.picture %}
+								<img src="{{ user.user.profile.picture.url }}" class="img-responsive" alt="Image">
+							{% else %}
+								<img src="{% static 'img/Profile.png' %}" class="img-responsive" alt="Image">
+							{% endif %}
+						</div>
+					</a>
+					{% endfor %}
+				{% endif %}
+			</div>
+		</div>
+	</div>
+{% endblock content %}

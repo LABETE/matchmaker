@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+
+
+{% block head_title %}Welcome | {{ block.super }}{% endblock %}
+
+<style>
+{% block style %}
+.navbar-static-top {
+	margin-bottom: 0px !important;
+}
+
+.jumbotron {
+	background-color:#0E3D14;
+	color: #FFF;
+}
+
+{% endblock %}
+</style>
+
+
+     
+{% block jumbotron %}
+ {% if not request.user.is_authenticated %}
+
+<div class="jumbotron">
+ <div class="container">
+	<div class="row">
+		<div class='col-sm-6'>
+		<h1>Try Django 1.8</h1>
+		<p>The MVP Landing project is designed to get your project started. The goal is to help you launch as soon as possible with the least amount of investment using time or money. Join Us today.</p>
+		<p>
+		<a class="btn btn-lg btn-primary" href="" role="button">Join Us &raquo;</a>
+		</p>
+		</div>
+		<div class='col-sm-6' >
+			<iframe width="560" height="315" src="https://www.youtube.com/embed/2uLYO1LUf6Q" frameborder="0" allowfullscreen></iframe>
+
+ 		</div>
+		</div>
+	</div>
+ </div>
+ {% endif %}
+{% endblock %}
+
+
+
+
+{% block content %}
+ 	{% if request.user.is_authenticated %}
+		<h1>Welcome {{ request.user }}</h1>
+		{% if question_object %}
+		{% include "questions/question_form.html" with object=question_object %}
+		{% else %}
+			<p class="lead">There are no more questions to answer, hold for more.</p>
+		{% endif %}
+		{% if matches_list %}
+		<div class="row">
+			<div class="col-sm-7">
+				<div class="row">
+			  		<h2>Users matches</h2>
+			  		<hr/>
+				  	{% if liked_users %}
+						{% for user in liked_users %}
+							<div class="col-sm-4">
+								<a href="{{ user.profile.get_absolute_url }}">
+									{{ user }}
+									{% if user.profile.picture %}
+										<img src="{{ user.profile.picture.url }}" height="200" class="img-responsive" alt="Image">
+									{% else %}
+										<img src="{% static 'img/Profile.png' %}" class="img-responsive" alt="Image">
+									{% endif %}
+								</a>
+							</div>
+						{% endfor %}
+				 	{% endif %}	
+		  		</div>
+			</div>
+		  	<div class="col-sm-4 pull-right">
+		  		<div class="row">
+			  		<h2>Users matches</h2>
+				  	{% if matches_list %}
+						{% for user, percent in matches_list %}
+							<div class="col-sm-4">
+								<a href="{{ user.profile.get_absolute_url }}">
+									{{ user.profile.user.username }}
+									{% if user.profile.picture %}
+										<img src="{{ user.profile.picture.url }}" height="200" class="img-responsive" alt="Image">
+									{% else %}
+										<img src="{% static 'img/Profile.png' %}" class="img-responsive" alt="Image">
+									{% endif %}
+								</a>
+								{{ percent }}
+							</div>
+						{% endfor %}
+				 	{% endif %}	
+		  		</div>
+		  		<hr/>
+			</div>
+			<div class="col-sm-4 col-sm-offset-8">
+		  		<div class="row">
+			  		<h2>Suggested Positions</h2>
+				  	{% if positions %}
+						{% for position in positions %}
+							<div class="col-sm-4">
+								<a href="{% url 'jobs:job_detail' slug=position|slugify %}">{{ position }}</a>
+							</div>
+						{% endfor %}
+				 	{% endif %}	
+		  		</div>
+		  		<hr/>
+			</div>
+			<div class="col-sm-4 col-sm-offset-8">
+		  		<div class="row">
+			  		<h2>Suggested locations</h2>
+				  	{% if locations %}
+						{% for location in locations %}
+							<div class="col-sm-4">
+								<a href="{% url 'jobs:location_detail' slug=location|slugify %}">{{ location }}</a>
+							</div>
+						{% endfor %}
+				 	{% endif %}	
+		  		</div>
+		  		<hr/>
+			</div>
+			<div class="col-sm-4 col-sm-offset-8">
+		  		<div class="row">
+			  		<h2>Suggested employers</h2>
+				  	{% if employers %}
+						{% for employer in employers %}
+							<div class="col-sm-4">
+								<a href="{% url 'jobs:employer_detail' slug=employer|slugify %}">{{ employer }}</a>
+							</div>
+						{% endfor %}
+				 	{% endif %}	
+		  		</div>
+		  		<hr/>
+			</div>
+		</div>
+		{% else %}
+			<div class="col-sm-6 col-sm-offset-3">
+				<p class="lead">Answer questions for get people who match what you think.</p>
+			</div>
+		{% endif %}
+
+	{% endif %}
+
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+{% if not request.user == object.user %}
+	<div class="row">
+		<div class="col-sm-6 col-sm-offset-3">
+			<div class="row">
+				<div class="col-sm-4">
+					<h2>{{ object.user }}</h2>
+					{% if object.location %}
+						<p class="lead">Location: {{ object.location }}</p>
+					{% endif %}
+					{% if match_percent %}
+						<p class="lead">Percent: {{ match_percent }}</p>
+					{% endif  %}
+					{% if object.picture %}
+						<img src="{{ object.picture.url }}" class="img-responsive" alt="Image">
+					{% else %}
+						<img src="{% static 'img/Profile.png' %}" class="img-responsive" alt="Image">
+					{% endif %}
+					<h3>You are connected with {{ object.user.username }}</h3>
+					<p class="lead">{% if mutual_like %}{{ object.user.email }}{% endif %}</p>
+					<p class="lead"><a href="{{ object.like_link }}">{% if do_i_like %}Unlike{% else %}Like{% endif %}</a></p>
+				</div>
+				<div class="col-sm-8 text-center">
+					<h2>Jobs</h2>
+					{% if jobs %}
+						{% for job in jobs %}
+							<table class="table">
+								<tr>
+									<td>
+										<a href="{% url 'jobs:job_detail' slug=job.position|slugify %}">{{ job.position }}</a> in <a href="{% url 'jobs:location_detail' slug=job.location|slugify %}">{{ job.location }}</a> at <a href="{% url 'jobs:employer_detail' slug=job.employer|slugify %}">{{ job.employer }}</a>
+									</td>
+								</tr>
+							</table>
+						{% endfor %}
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+{% else %}
+	<div class="col-sm-6 col-sm-offset-3">
+		<p class="lead">You have no access to this page</p>
+	</div>
+{% endif %}
+{% endblock content %}
