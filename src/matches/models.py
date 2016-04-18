@@ -87,7 +87,7 @@ class Match(models.Model):
 
     @property
     def match_percent(self):
-        percent = "{0:.2f}%".format(self.match_decimal * 100)
+        percent = "{:.2%}".format(self.match_decimal)
         return percent
 
     def do_match(self):
